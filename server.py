@@ -119,5 +119,18 @@ def wordle_play():
         return jsonify({"error": "Failed to play Wordle"}), 500
 
 
+@app.route('/api/wordle/models', methods=['GET'])
+def wordle_models():
+    """Fetch available Wordle bot models"""
+    try:
+        response = requests.get(f"{WORDLE_BOT_URL}/models", timeout=5)
+        return jsonify(response.json()), response.status_code
+    except requests.Timeout:
+        return jsonify({"success": False, "error": "Could not fetch available models"}), 500
+    except Exception as e:
+        print(f"[Wordle] FETCH ERROR (before response): {e}")
+        return jsonify({"success": False, "error": "Could not fetch available models"}), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 3000)), debug=False)
